@@ -50,5 +50,6 @@ int main()
     preComputeFactorial();
 
     cout << nCr(5, 3);
+    
     return 0;
 }
