@@ -1,4 +1,62 @@
 // Trie for max/min XOR
+
+class Trie {
+    class TrieNode {
+    public:
+        TrieNode* links[2]; 
+        TrieNode() {
+            links[0] = nullptr;
+            links[1] = nullptr;
+        }
+        bool contains(int bit) {
+            return links[bit] != nullptr;
+        }
+        void put(int bit, TrieNode* node) {
+            links[bit] = node;
+        }
+        TrieNode* get(int bit) {
+            return links[bit];
+        }
+    };
+
+public:
+    TrieNode* root;
+    Trie() {
+        root = new TrieNode();
+    }
+
+    void insert(int num) {
+        TrieNode* node = root;
+        for (int i = 31; i >= 0; i--) {
+            int bit = (num >> i) & 1;
+            if (!node->contains(bit)) {
+                node->put(bit, new TrieNode());
+            }
+            node = node->get(bit);
+        }
+    }
+
+    // Find max XOR with num
+    int findMax(int num) {
+        TrieNode* node = root;
+        int maxXor = 0;
+
+        for (int i = 31; i >= 0; i--) {
+            int bit = (num >> i) & 1;
+            int complement = 1 - bit;
+
+            if (node->contains(complement)) {
+                maxXor |= (1 << i); 
+                node = node->get(complement);
+            } else {
+                node = node->get(bit);
+            }
+        }
+        return maxXor;
+    }
+};
+
+
 class Trie
 {
     class TrieNode
