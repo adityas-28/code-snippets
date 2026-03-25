@@ -17,16 +17,32 @@ void buildSegmentTree(int idx, int low, int high, vector<int> &arr, vector<int> 
     seg[idx] = max(seg[2 * idx + 1], seg[2 * idx + 2]);
 }
 
+void updateSegmentTree(int idx, int low, int high, int pos, int val, vector<int> &seg)
+{
+    if (low == high)
+    {
+        seg[idx] = val;
+        return;
+    }
+
+    int mid = low + (high - low) / 2;
+
+    if (pos <= mid)
+        updateSegmentTree(2 * idx + 1, low, mid, pos, val, seg);
+    else
+        updateSegmentTree(2 * idx + 2, mid + 1, high, pos, val, seg);
+
+    seg[idx] = max(seg[2 * idx + 1], seg[2 * idx + 2]);
+}
+
 int findMaxQuery(int idx, int low, int high, int l, int r, vector<int> &seg) // low, high for arr; l, r for query
 {
     if (low >= l && high <= r) // completely lie inside
-    {
         return seg[idx];
-    }
-    else if ((low < l && high < l) || (low > r && high > r)) // completetly outside
-    {
+
+    else if (high < l || low > r) // completetly outside
         return INT_MIN;
-    }
+
     else // overlap condition
     {
         int mid = low + (high - low) / 2;
@@ -52,31 +68,4 @@ vector<int> findMaxInRange(vector<int> &arr, vector<vector<int>> &queries)
     }
 
     return ans;
-}
-
-int main()
-{
-    int n, m;
-    cin >> n >> m;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++)
-    {
-        cin >> arr[i];
-    }
-
-    vector<vector<int>> queries(m, vector<int>(2));
-    for (int i = 0; i < m; i++)
-    {
-        cin >> queries[i][0] >> queries[i][1];
-    }
-
-    vector<int> ans = findMaxInRange(arr, queries);
-    for (int i : ans)
-    {
-        cout << i << " ";
-    }
-    cout << endl;
-
-    return 0;
 }
